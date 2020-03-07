@@ -13,22 +13,7 @@ services:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
        
 
-  logstash1:
-    container_name: logstash1
-    build:
-      context: logstash/
-      args:
-        ELK_VERSION: $ELK_VERSION
-    volumes:
-      - ${PWD}/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ${PWD}/logstash/pipeline:/usr/share/logstash/pipeline:ro
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    depends_on:
-      - elasticsearch
-
-  logstash2:
-    container_name: logstash2
+  logstash:
     build:
       context: logstash/
       args:
