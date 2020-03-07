@@ -1,0 +1,58 @@
+version: '2.1'
+#https://www.digitalocean.com/community/tutorials/how-to-secure-a-containerized-node-js-application-with-nginx-let-s-encrypt-and-docker-compose
+services:
+  elasticsearch:
+    container_name: elasticsearch
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ${PWD}/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+       
+
+  logstash1:
+    container_name: logstash1
+    build:
+      context: logstash/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ${PWD}/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ${PWD}/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+
+  logstash2:
+    container_name: logstash2
+    build:
+      context: logstash/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ${PWD}/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ${PWD}/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    build:
+      context: kibana/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    environment:
+       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      
+    depends_on:
+      - elasticsearch
+
+networks:
+  default:
+    external:
+      name: container-net
