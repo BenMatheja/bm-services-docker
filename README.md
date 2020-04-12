@@ -1,4 +1,6 @@
 # bm-services-docker
+This project has been decomissioned in favor of [Traefik](https://github.com/BenMatheja/traefik-sandbox)
+I was not able to bring Letsencrypt to work and adding new services meant fighting with nginx configurations.
 
 ## Introduction
 * nginx
